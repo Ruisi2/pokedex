@@ -1,0 +1,60 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro"
+---
+
+<Layout title="Pokédex">
+	<div class="p-5">
+		<h1 class="text-white text-4xl text-center mb-10">Pokédex</h1>
+		<form class="grid place-content-center">
+            <label for="pokemon_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Buscar pokemons</label>
+            <input type="text" id="pokemon_name" class="mb-5 w-80 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pokemon..." required>
+			<button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Buscar</button>
+			<Card url="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png" name="Ditto" peso={40}></Card>
+        </form>
+	</div>
+</Layout>
+
+<style>
+	body {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 0;
+	}
+	.container {
+		width: 100%;
+	}
+</style>
+
+<script>
+	let urlBase = "https://pokeapi.co/api/v2/pokemon/";
+	const btn = document.getElementsByTagName("button");
+	
+	async function buscarPokemon(e) {
+		e.preventDefault();
+		let inputValue = document.getElementById("pokemon_name");
+		if(inputValue.value.trim() == "") {
+			alert("Introduce un pokemon para comenzar la búsqueda");
+			return
+		}
+		const request = await fetch(`${urlBase}${inputValue.value}`);
+		const response = await request.json();
+
+		console.log(response)
+
+		let h1 = document.getElementById("name");
+		let img = document.getElementById("img");
+		let p = document.getElementById("peso");
+
+		h1.textContent = response.name.replace(response.name[0], response.name[0].toUpperCase());
+
+		img.setAttribute("src", response.sprites.front_default);
+		p.textContent = response.weight + " g";
+	}
+	
+	btn[0].addEventListener("click", e => {
+		buscarPokemon(e);
+	})
+	
+</script>
